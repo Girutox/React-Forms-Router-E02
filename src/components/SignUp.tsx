@@ -1,82 +1,29 @@
-import { useState } from 'react'
+import { useForm } from '../hooks/useForm'
 
 import './SignUp.scss'
 
-const useForm = () => {
-  const [form, setForm] = useState({})
+type FormInputProps = {
+  id: string,
+  name: string,
+  value: string,
+  error: string,
+  onChange: (evt: React.ChangeEvent<HTMLInputElement>) => void
+}
 
-  const register = (controlName: string) => {
-    const newControl = {
-      id: controlName,
-      name: controlName,
-      value: '',
-      error: '',
-      onChange: (evt: React.ChangeEvent<HTMLInputElement>) => {
-        setForm(prev => {
-          return {
-            ...prev,
-            [controlName]: {
-              ...prev[controlName],
-              value: evt.target.value,
-              error: ''
-            }
-          }
-        })
-      }
-    }
-
-    if (!form[controlName]) {
-      setForm({
-        ...form,
-        [controlName]: newControl
-      })
-    }  
-
-    return { ...form[controlName] } // retornar el nuevo control
-  }
-
-  return { register, form }
+type Form = {
+  email: FormInputProps,
+  phone: FormInputProps,
+  user: FormInputProps,
+  password: FormInputProps
 }
 
 const SignUp = () => {
-  const { form, register } = useForm()
-
-  // const isValidForm = () => {
-  //   let rpta = true
-
-  //   if (form.email.value === '') {
-  //     setForm(prev => {
-  //       return {
-  //         ...prev,
-  //         email: {
-  //           ...prev.email,
-  //           error: 'Email is required'
-  //         }
-  //       }
-  //     })
-  //     rpta = false
-  //   }
-
-  //   if (form.phone.value === '') {
-  //     setForm(prev => {
-  //       return {
-  //         ...prev,
-  //         phone: {
-  //           ...prev.phone,
-  //           error: 'Phone is required'
-  //         }
-  //       }
-  //     })
-  //     rpta = false
-  //   }
-
-  //   return rpta
-  // }
+  const { form, register, isValidForm } = useForm<Form>()
 
   const submitHandler = (evt: React.FormEvent<HTMLFormElement>) => {
     evt.preventDefault()
 
-    // if (!isValidForm()) return
+    if (!isValidForm()) return
 
     console.log(form);
   }
@@ -90,19 +37,23 @@ const SignUp = () => {
       <div className='control-container'>
         <label htmlFor='email'>Email</label>
         <input type='text' {...register('email')} />
+        {form.email?.error !== '' && <p className='error'>{form.email?.error}</p>}
       </div>
-      {/* <div className='control-container'>
+      <div className='control-container'>
         <label htmlFor='phone'>Phone</label>
         <input type='text' {...register('phone')} />
+        {form.phone?.error !== '' && <p className='error'>{form.phone?.error}</p>}
       </div>
       <div className='control-container'>
         <label htmlFor='user'>User</label>
         <input type='text' {...register('user')} />
+        {form.user?.error !== '' && <p className='error'>{form.user?.error}</p>}
       </div>
       <div className='control-container'>
         <label htmlFor='password'>Password</label>
         <input type='password' {...register('password')} />
-      </div> */}
+        {form.password?.error !== '' && <p className='error'>{form.password?.error}</p>}
+      </div>
       <button type='submit'>⤴ Sign Up</button>
     </form>
   </div>
