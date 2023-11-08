@@ -1,6 +1,9 @@
+import {useContext} from 'react'
 import { useForm, SubmitHandler } from "react-hook-form"
+import { useNavigate } from "react-router-dom"
 
 import './SignUp.scss'
+import { AuthContext } from '../store/AuthProvider'
 
 type Form = {
   email: string,
@@ -10,6 +13,10 @@ type Form = {
 }
 
 const SignUpV2 = () => {
+  const navigate = useNavigate()
+
+  const { logIn } = useContext(AuthContext)
+
   const {
     register,
     handleSubmit,
@@ -17,7 +24,13 @@ const SignUpV2 = () => {
     formState: { errors },
   } = useForm<Form>()
 
-  const onSubmit: SubmitHandler<Form> = (data) => console.log(data) // viajar a siguiente form
+  const onSubmit: SubmitHandler<Form> = (data) => {
+    console.log(data)
+
+    logIn()
+
+    navigate('home')
+  }
 
   // console.log(watch("example"))
 

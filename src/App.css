@@ -4,3 +4,8 @@
   padding: 2rem;
   text-align: center;
 }
+
+.is-active {
+  color: #61dafb;
+  pointer-events: none;
+}
