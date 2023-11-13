@@ -1,9 +1,11 @@
 import './App.css'
-import { useContext, useEffect } from 'react'
 // import SignUp from './components/SignUp'
 import SignUpV2 from './components/SignUpV2'
-import { Route, Routes, Outlet, useParams, Link, useOutletContext, NavLink as NavLinkRouter, useNavigate } from 'react-router-dom'
-import AuthProvider, { AuthContext } from './store/AuthProvider'
+import { Route, Routes, Outlet, useParams, Link, useOutletContext, NavLink as NavLinkRouter, useNavigate, Navigate } from 'react-router-dom'
+import AuthProvider from './store/AuthProvider'
+import { useAuth } from './hooks/useAuth'
+import { AuthContext } from './store/AuthProvider'
+import { useContext } from 'react'
 
 const NavLink = ({ to, children }: { to: string, children: React.ReactNode }) => {
   return (
@@ -16,17 +18,7 @@ const NavLink = ({ to, children }: { to: string, children: React.ReactNode }) =>
 }
 
 const Home = () => {
-  const navigate = useNavigate()
-
-  const { isLoggedIn } = useContext(AuthContext)
-
-  useEffect(() => {
-    if (!isLoggedIn) {
-      console.log('User is not logged in');
-
-      navigate('/')
-    }
-  }, [isLoggedIn, navigate])
+  // useAuth()
 
   return (
     <>
@@ -94,6 +86,24 @@ const AboutUsVIP = () => {
   return <h3>VIP selected: {vipParam}</h3>
 }
 
+const Videogames = () => {
+  // useAuth()
+
+  return <h3>Videogames 🎮</h3>
+}
+
+const ProtectedRoute = ({children}: { children: React.ReactNode }) => {
+  // const { isLoggedIn } = useContext(AuthContext)
+  const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true'
+  console.log(isLoggedIn);  
+
+  if (!isLoggedIn) {
+    return <Navigate to='/' />
+  }
+
+  return children
+}
+
 function App() {
   return (
     <>
@@ -101,13 +111,14 @@ function App() {
       <AuthProvider>
         <Routes>
           <Route path='/' element={<SignUpV2 />} />
-          <Route path='/home' element={<Home />}>
+          <Route path='/home' element={<ProtectedRoute><Home /></ProtectedRoute>}>
             <Route index element={<h2>This is a placeholder page for HOME!!!</h2>} />
             <Route path='contacts' element={<Contacts />} />
             <Route path='aboutus' element={<AboutUs />}>
               <Route path=':vipParam' element={<AboutUsVIP />} />
             </Route>
           </Route>
+          <Route path='/videogames' element={<Videogames />} />
         </Routes >
       </AuthProvider>
     </>
